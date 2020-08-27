@@ -13,7 +13,6 @@ import os
 from pathlib import Path
 from decouple import config, Csv
 from dj_database_url import parse as dburl
-from authlib.integrations.django_client import OAuth
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -35,7 +34,6 @@ AUTH_USER_MODEL = 'accounts.UserModel'
 
 
 # OAUTH configuration
-oauth = OAuth()
 
 OAUTH_CALLBACK_ID = config('OAUTH_CALLBACK_ID', default=None)
 
@@ -45,17 +43,6 @@ AUTHLIB_OAUTH_CLIENTS = {
         'client_secret': config('OAUTH_CLIENT_SECRET')
     }
 }
-
-base_url = 'https://uspdigital.usp.br/wsusuario/oauth'
-
-oauth.register(
-    name='usp',
-    request_token_url= base_url + '/request_token',
-    access_token_url= base_url + '/access_token',
-    authorize_url= base_url + '/authorize&callback_id={}'.format(OAUTH_CALLBACK_ID),
-)
-
-OAUTH_USP = oauth
 
 REDIRECT_URI = config('REDIRECT_URI')
 
