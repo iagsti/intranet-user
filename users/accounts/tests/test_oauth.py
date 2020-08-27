@@ -26,3 +26,12 @@ class OAuthUspTest(TestCase):
         expected = 'https://uspdigital.usp.br/wsusuario/oauth/authorize'
         self.assertIn(expected, resp.url)
 
+    @mock_oauth
+    def test_get_resource(self):
+        request = HttpRequest()
+        query = QueryDict('oauth_token=12345oauth&oauth_verifier=12345veriifer')
+        request.GET = query
+        resp = self.obj.get_resource(request)
+        expected = json.loads(resource)
+        self.assertDictEqual(expected, resp)
+
