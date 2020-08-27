@@ -35,3 +35,9 @@ class OAuthUsp:
         authorize_redirect = oauth_usp.authorize_redirect(
             request, self.redirect_uri)
         return authorize_redirect
+
+    def get_resource(self, request):
+        oauth_usp = self.oauth_usp
+        token = oauth_usp.authorize_access_token(request)
+        resource = oauth_usp.post(RESOURCE_URL, token=token)
+        return resource.json()
