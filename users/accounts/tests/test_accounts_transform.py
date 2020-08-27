@@ -1,6 +1,7 @@
 from django.test import TestCase
 
 from ..transform import Transform, Mapper
+from .faker import fake
 
 
 class TransformTest(TestCase):
@@ -9,6 +10,11 @@ class TransformTest(TestCase):
 
     def test_has_mapper_attribute(self):
         self.assertTrue(hasattr(self.obj, 'mapper'))
+
+    def test_mapper(self):
+        expected = fake.resource_transformed()
+        resp = self.obj.transform_data(fake.resource())
+        self.assertDictEqual(expected, resp)
 
 
 class MapperTest(TestCase):
