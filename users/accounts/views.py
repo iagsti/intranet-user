@@ -17,3 +17,15 @@ class OAuthLogin(RedirectView):
 
 
 accounts_login = OAuthLogin.as_view()
+
+
+class OAuthAuthorize(View):
+    def setup(self, request, *args, **kwargs):
+        self.oauth_usp = OAuthUsp()
+        return super().setup(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        profile = self.oauth_usp.get_resource(request)
+
+
+accounts_authorize = OAuthAuthorize.as_view()
