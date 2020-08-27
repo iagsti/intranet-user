@@ -14,4 +14,13 @@ class Mapper:
 
 
 class Transform:
-    mapper = None
+    mapper = Mapper
+
+    def transform_data(self, data):
+        mapper = self.mapper().get_mapper()
+        transformed = dict()
+        for key in mapper:
+            if key in data:
+                transformed.update({mapper.get(key): str(data.get(key))})
+
+        return transformed
