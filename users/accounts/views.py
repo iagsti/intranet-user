@@ -1,6 +1,9 @@
 from django.shortcuts import render
-from django.views.generic import RedirectView
+from django.views.generic import RedirectView, View
 from django.conf import settings
+from django.http import HttpResponse
+
+from .oauth import OAuthUsp
 
 
 class OAuthLogin(RedirectView):
@@ -8,10 +11,8 @@ class OAuthLogin(RedirectView):
         return self.redirect_uri.url
 
     def setup(self, request, *args, **kwargs):
-        oauth_usp = getattr(settings, 'OAUTH_USP')
-        usp = oauth_usp.create_client('usp')
-        redirect_uri = getattr(settings, 'REDIRECT_URI')
-        self.redirect_uri = usp.authorize_redirect(request, redirect_uri)
+        oauth_usp = OAuthUsp()
+        self.redirect_uri = oauth_usp.get_authorize_redirect(request)
         return super().setup(request, *args, **kwargs)
 
 
