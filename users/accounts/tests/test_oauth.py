@@ -29,9 +29,9 @@ class OAuthUspTest(TestCase):
     @mock_oauth
     def test_get_resource(self):
         request = HttpRequest()
-        query = QueryDict('oauth_token=12345oauth&oauth_verifier=12345veriifer')
+        query = QueryDict(
+            'oauth_token=12345oauth&oauth_verifier=12345veriifer')
         request.GET = query
         resp = self.obj.get_resource(request)
         expected = json.loads(resource)
         self.assertDictEqual(expected, resp)
-
