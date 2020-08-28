@@ -1,9 +1,9 @@
-from django.shortcuts import render
 from django.views.generic import RedirectView, View
-from django.conf import settings
-from django.http import HttpResponse
+from django.contrib.auth import login
 
 from .oauth import OAuthUsp
+from .transform import Transform
+from .models import UserModel
 
 
 class OAuthLogin(RedirectView):
@@ -25,7 +25,20 @@ class OAuthAuthorize(View):
         return super().setup(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        profile = self.oauth_usp.get_resource(request)
+        self.profile = self.oauth_usp.get_resource(request)
+        self.data_transform()
+        self.persist_user()
+        self.authenticate_user(request)
+
+    def data_transform(self):
+        transform = Transform()
+        self.profile = transform.transform_data(self.profile)
+
+    def persist_user(self):
+        self.user = UserModel.objects.create_user(**self.profile)
+
+    def authenticate_user(self, request):
+        login(request=request, user=self.user)
 
 
 accounts_authorize = OAuthAuthorize.as_view()
