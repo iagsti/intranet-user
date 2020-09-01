@@ -1,6 +1,8 @@
 from django.test import TestCase
 from django.shortcuts import resolve_url as r
 from django.http import HttpRequest, QueryDict
+from django.contrib.sessions.backends.db import SessionStore
+from django.contrib.auth.models import AnonymousUser
 
 from ..views import OAuthAuthorize
 from ..models import UserModel
@@ -22,20 +24,29 @@ class AuthorizeViewTest(TestCase):
         self.request = HttpRequest()
         query = QueryDict(
             'oauth_token=12345oauth & oauth_verifier=12345veriifer')
+
         self.request.GET = query
-        setattr(self.request, 'session', {'_usp_authlib_request_token_': {
-                'oauth_token': 'token123', 'oauth_token_secret': 'secret123',
-                'oauth_verifier': 'verifier123'}})
+
+        session = SessionStore()
+        setattr(self.request, 'session', session)
+
+        request_token = dict(
+            oauth_token='token123', oauth_token_secret='oauth_token_secret123',
+            oauth_verifier='verifier123')
+        self.request.session['_usp_authlib_request_token_'] = request_token
+
+        setattr(self.request, 'user', AnonymousUser())
+
         self.obj = OAuthAuthorize()
 
-    @mock_oauth
+    @ mock_oauth
     def test_user_has_been_presisted(self):
         self.obj.setup(self.request)
         self.obj.get(self.request)
         self.assertTrue(UserModel.objects.exists())
 
-    @mock_oauth
+    @ mock_oauth
     def test_user_loged_in(self):
         self.obj.setup(self.request)
         self.obj.get(self.request)
-        self.assertTrue(self.request.user_is_authenticated)
+        self.assertTrue(self.request.user.is_authenticated)
