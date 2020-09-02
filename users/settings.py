@@ -68,6 +68,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'users.accounts.middleware.OAuthUspMiddleware',
 ]
 
 ROOT_URLCONF = 'users.urls'
@@ -139,4 +140,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-ALLOWED_UNIDADES = '14'
+ALLOWED_UNIDADES = config('ALLOWED_UNIDADES', cast=Csv())
