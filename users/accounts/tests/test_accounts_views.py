@@ -65,6 +65,12 @@ class AuthorizeViewTest(TestCase):
         self.obj.get(self.request)
         self.assertTrue(self.request.user.is_authenticated)
 
+    @ mock_oauth
+    def test_response_status_code(self):
+        self.obj.setup(self.request)
+        resp = self.obj.get(self.request)
+        self.assertTrue(302, resp.status_code)
+
 
 class OAuthLoginTest(TestCase):
     def setUp(self):

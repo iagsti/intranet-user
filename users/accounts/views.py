@@ -44,6 +44,8 @@ class OAuthAuthorize(View):
         self.data_transform()
         self.persist_user()
         self.authenticate_user(request)
+        redirect_path = self.get_redirect_path(request)
+        return redirect(redirect_path)
 
     def data_transform(self):
         transform = Transform()
@@ -55,6 +57,12 @@ class OAuthAuthorize(View):
 
     def authenticate_user(self, request):
         login(request=request, user=self.user)
+
+    def get_redirect_path(self, request):
+        next_path = request.session.get('next')
+        if next_path:
+            return request.session.pop('next')
+        return '/auth/user'
 
 
 accounts_authorize = OAuthAuthorize.as_view()
