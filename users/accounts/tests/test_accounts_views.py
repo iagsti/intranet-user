@@ -7,6 +7,7 @@ from django.contrib.auth.models import AnonymousUser
 from ..views import OAuthAuthorize
 from ..models import UserModel
 from .mock import mock_oauth
+from .faker import data as user_data
 
 
 class LoginViewsTest(TestCase):
@@ -16,6 +17,18 @@ class LoginViewsTest(TestCase):
     def test_status_code(self):
         """Status code should be 302"""
         self.assertEqual(302, self.resp.status_code)
+
+
+class LoginViewsUserLogedInTest(TestCase):
+    def setUp(self):
+        self.user = UserModel.objects.create_user(**user_data)
+        self.client.force_login(self.user)
+        self.resp = self.client.get(r('accounts:login'))
+
+    def test_redirect_to_user_detail(self):
+        """Loged in user should be redirect to user detail"""
+        expected = '/auth/user'
+        self.assertEqual(self.resp.url, expected)
 
 
 class AuthorizeViewTest(TestCase):
