@@ -50,7 +50,8 @@ class OAuthAuthorize(View):
         self.profile = transform.transform_data(self.profile)
 
     def persist_user(self):
-        self.user = UserModel.objects.create_user(**self.profile)
+        self.user, create = UserModel.objects.update_or_create_user(
+            **self.profile)
 
     def authenticate_user(self, request):
         login(request=request, user=self.user)
