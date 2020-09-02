@@ -8,18 +8,21 @@ from .models import UserModel
 
 
 class OAuthLogin(RedirectView):
+    def get(self, request, *args, **kwargs):
+        self.detail_if_logedin(request)
+        self.set_next_url(request)
+        return super().get(request, *args, **kwargs)
+
     def get_redirect_url(self, *args, **kwargs):
-        self.detail_if_logedin()
         return self.redirect_uri.url
 
     def setup(self, request, *args, **kwargs):
         oauth_usp = OAuthUsp()
         self.redirect_uri = oauth_usp.get_authorize_redirect(request)
-        self.set_next_url(request)
         return super().setup(request, *args, **kwargs)
 
-    def detail_if_logedin(self):
-        if self.request.user.is_authenticated:
+    def detail_if_logedin(self, request):
+        if request.user.is_authenticated:
             self.redirect_uri = redirect('/auth/user')
 
     def set_next_url(self, request):

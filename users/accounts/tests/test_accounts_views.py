@@ -71,6 +71,13 @@ class OAuthLoginTest(TestCase):
 
     def test_next_url(self):
         request = HttpRequest()
-        self.obj.set_next_url(request)
+        session = SessionStore()
+
+        setattr(request, 'session', session)
+        setattr(request, 'user', AnonymousUser())
+
+        self.obj.setup(request)
+        self.obj.get(request)
+
         expected = '/'
-        self.assertEqual(self.obj.request.get('next'), expected)
+        self.assertEqual(self.obj.request.session.get('next'), expected)
