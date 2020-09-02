@@ -13,7 +13,7 @@ data = {
     'usp_email': fake.email(),
     'formatted_phone': fake.phone_number(),
     'wsuserid': fake.msisdn(),
-    'bind': '{}',
+    'bind': '[]',
 }
 
 
