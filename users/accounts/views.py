@@ -15,11 +15,17 @@ class OAuthLogin(RedirectView):
     def setup(self, request, *args, **kwargs):
         oauth_usp = OAuthUsp()
         self.redirect_uri = oauth_usp.get_authorize_redirect(request)
+        self.set_next_url(request)
         return super().setup(request, *args, **kwargs)
 
     def detail_if_logedin(self):
         if self.request.user.is_authenticated:
             self.redirect_uri = redirect('/auth/user')
+
+    def set_next_url(self, request):
+        request.session['next'] = '/'
+        if 'next' in request.GET:
+            request.session['next'] = request.GET['next']
 
 
 accounts_login = OAuthLogin.as_view()

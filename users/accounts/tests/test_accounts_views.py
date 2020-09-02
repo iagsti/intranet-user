@@ -4,7 +4,7 @@ from django.http import HttpRequest, QueryDict
 from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.auth.models import AnonymousUser
 
-from ..views import OAuthAuthorize
+from ..views import OAuthAuthorize, OAuthLogin
 from ..models import UserModel
 from .mock import mock_oauth
 from .faker import data as user_data
@@ -63,3 +63,14 @@ class AuthorizeViewTest(TestCase):
         self.obj.setup(self.request)
         self.obj.get(self.request)
         self.assertTrue(self.request.user.is_authenticated)
+
+
+class OAuthLoginTest(TestCase):
+    def setUp(self):
+        self.obj = OAuthLogin()
+
+    def test_next_url(self):
+        request = HttpRequest()
+        self.obj.set_next_url(request)
+        expected = '/'
+        self.assertEqual(self.obj.request.get('next'), expected)
