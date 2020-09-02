@@ -21,6 +21,7 @@ class LoginViewsTest(TestCase):
 
 class LoginViewsUserLogedInTest(TestCase):
     def setUp(self):
+        user_data['bind'] = '[{"codigoUnidade": "14"}]'
         self.user = UserModel.objects.create_user(**user_data)
         self.client.force_login(self.user)
         self.resp = self.client.get(r('accounts:login'))
