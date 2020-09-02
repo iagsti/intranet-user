@@ -1,5 +1,6 @@
 from django.views.generic import RedirectView, View
 from django.contrib.auth import login
+from django.shortcuts import redirect
 
 from .oauth import OAuthUsp
 from .transform import Transform
@@ -8,12 +9,17 @@ from .models import UserModel
 
 class OAuthLogin(RedirectView):
     def get_redirect_url(self, *args, **kwargs):
+        self.detail_if_logedin()
         return self.redirect_uri.url
 
     def setup(self, request, *args, **kwargs):
         oauth_usp = OAuthUsp()
         self.redirect_uri = oauth_usp.get_authorize_redirect(request)
         return super().setup(request, *args, **kwargs)
+
+    def detail_if_logedin(self):
+        if self.request.user.is_authenticated:
+            self.redirect_uri = redirect('/auth/user')
 
 
 accounts_login = OAuthLogin.as_view()
