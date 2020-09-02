@@ -32,6 +32,20 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='', cast=Csv())
 
 AUTH_USER_MODEL = 'accounts.UserModel'
 
+
+# OAUTH configuration
+
+OAUTH_CALLBACK_ID = config('OAUTH_CALLBACK_ID', default=None)
+
+AUTHLIB_OAUTH_CLIENTS = {
+    'usp': {
+        'client_id': config('OAUTH_CLIENT_ID'),
+        'client_secret': config('OAUTH_CLIENT_SECRET')
+    }
+}
+
+REDIRECT_URI = config('REDIRECT_URI')
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -54,6 +68,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'users.accounts.middleware.OAuthUspMiddleware',
 ]
 
 ROOT_URLCONF = 'users.urls'
@@ -125,4 +140,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-ALLOWED_UNIDADES = '14'
+ALLOWED_UNIDADES = config('ALLOWED_UNIDADES', cast=Csv())
