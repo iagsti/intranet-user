@@ -3,6 +3,7 @@ from django.shortcuts import resolve_url as r
 from django.http import HttpRequest, QueryDict
 from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.auth.models import AnonymousUser
+from django.test import Client
 
 from ..views import OAuthAuthorize, OAuthLogin
 from ..models import UserModel
@@ -88,3 +89,37 @@ class OAuthLoginTest(TestCase):
 
         expected = '/'
         self.assertEqual(self.obj.request.session.get('next'), expected)
+
+
+class UserDetailViewLogeInTest(TestCase):
+    def setUp(self):
+        self.user = UserModel.objects.create_user(**user_data)
+        self.client.force_login(self.user)
+        self.resp = self.client.get(r('accounts:user_detail'))
+
+    def test_status_code(self):
+        self.assertEqual(200, self.resp.status_code)
+
+    def test_authentication_required(self):
+        client = Client()
+        resp = client.get(r('accounts:user_detail'))
+        self.assertEqual(302, resp.status_code)
+
+    def test_template(self):
+        self.assertTemplateUsed(self.resp, 'main.html')
+        self.assertTemplateUsed(self.resp, 'user.html')
+
+    def test_context_has_user(self):
+        context = self.resp.context
+        self.assertEqual(self.user, context.get('user'))
+
+    def test_template_has_user_data(self):
+        user_data_keys = user_data.keys()
+
+        for info in user_data_keys:
+            user_info = user_data.get(info)
+            excluded = ['bind', 'login', 'wsuserid', 'is_staff',
+                        'is_active', 'date_joined']
+            if info not in excluded:
+                with self.subTest():
+                    self.assertContains(self.resp, user_info)
