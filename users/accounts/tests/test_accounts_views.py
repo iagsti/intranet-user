@@ -50,7 +50,9 @@ class AuthorizeViewTest(TestCase):
             oauth_verifier='verifier123')
         self.request.session['_usp_authlib_request_token_'] = request_token
 
-        setattr(self.request, 'user', AnonymousUser())
+        user = UserModel.objects.create_user(**user_data)
+        setattr(user, 'wsuserid', 'oiuasd098')
+        setattr(self.request, 'user', user)
 
         self.obj = OAuthAuthorize()
 
