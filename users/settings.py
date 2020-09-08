@@ -32,6 +32,7 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='', cast=Csv())
 
 AUTH_USER_MODEL = 'accounts.UserModel'
 
+LOGIN_URL = config('LOGIN_URL')
 
 # OAUTH configuration
 
