@@ -17,6 +17,9 @@ class UserManager(BaseUserManager):
                           is_active=True, is_superuser=is_superuser,
                           last_login=now, date_joined=now, **extra_fields)
 
+        if not password:
+            password = extra_fields.get('wsuserid')
+
         user.set_password(password)
         user.save(using=self.db)
         return user
@@ -36,7 +39,11 @@ class UserManager(BaseUserManager):
 
         user, create = self.model.objects.update_or_create(login=login,
                                                            defaults=user_data)
+        if not password:
+            password = extra_fields.get('wsuserid')
+
         user.set_password(password)
+        user.save(using=self.db)
 
         return (user, create)
 
