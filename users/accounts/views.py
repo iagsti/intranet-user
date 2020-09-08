@@ -1,6 +1,7 @@
 from django.views.generic import RedirectView, View
-from django.contrib.auth import login
-from django.shortcuts import redirect
+from django.contrib.auth import login, authenticate
+from django.shortcuts import redirect, render, resolve_url as r
+from django.contrib.auth.decorators import login_required
 
 from .oauth import OAuthUsp
 from .transform import Transform
