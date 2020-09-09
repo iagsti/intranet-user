@@ -47,6 +47,8 @@ AUTHLIB_OAUTH_CLIENTS = {
 
 REDIRECT_URI = config('REDIRECT_URI')
 
+REDIRECT_AFTER_LOGOUT_URL = config('REDIRECT_AFTER_LOGOUT_URL', default='/')
+
 # Application definition
 
 INSTALLED_APPS = [
