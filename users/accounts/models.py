@@ -59,7 +59,7 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
         bind = self.get_bind()
         for item in bind:
             codigo_unidade = item["codigoUnidade"]
-            if codigo_unidade in self.ALLOWED_UNIDADES:
+            if str(codigo_unidade) in self.ALLOWED_UNIDADES:
                 return True
 
         return False
