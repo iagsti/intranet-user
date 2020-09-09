@@ -1,6 +1,7 @@
 from django.views.generic import RedirectView, View
-from django.contrib.auth import login
-from django.shortcuts import redirect
+from django.contrib.auth import login, authenticate
+from django.shortcuts import redirect, render, resolve_url as r
+from django.contrib.auth.decorators import login_required
 
 from .oauth import OAuthUsp
 from .transform import Transform
@@ -23,7 +24,7 @@ class OAuthLogin(RedirectView):
 
     def detail_if_logedin(self, request):
         if request.user.is_authenticated:
-            self.redirect_uri = redirect('/auth/user')
+            self.redirect_uri = redirect(r('accounts:user_detail'))
 
     def set_next_url(self, request):
         request.session['next'] = '/'
@@ -56,13 +57,22 @@ class OAuthAuthorize(View):
             **self.profile)
 
     def authenticate_user(self, request):
-        login(request=request, user=self.user)
+        user = authenticate(request, username=self.user.login,
+                            password=self.user.wsuserid)
+        if user:
+            login(request=request, user=user)
 
     def get_redirect_path(self, request):
         next_path = request.session.get('next')
         if next_path:
             return request.session.pop('next')
-        return '/auth/user'
+        return r('accounts:user_detail')
 
 
 accounts_authorize = OAuthAuthorize.as_view()
+
+
+@login_required
+def user_detail(request):
+    context = {'user': request.user}
+    return render(request, 'user.html', context=context)

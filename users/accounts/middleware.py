@@ -7,13 +7,13 @@ class OAuthUspMiddleware:
 
     def __call__(self, request):
         if request.user.is_authenticated:
-            return self.alllowed_unidade_or_fornidden(request)
+            return self.alllowed_unidade_or_forbidden(request)
 
         response = self.get_response(request)
 
         return response
 
-    def alllowed_unidade_or_fornidden(self, request):
+    def alllowed_unidade_or_forbidden(self, request):
         if not request.user.unidade_is_allowed():
             return HttpResponseForbidden()
 
