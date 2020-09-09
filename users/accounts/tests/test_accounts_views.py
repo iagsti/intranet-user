@@ -125,3 +125,16 @@ class UserDetailViewLogeInTest(TestCase):
             if info not in excluded:
                 with self.subTest():
                     self.assertContains(self.resp, user_info)
+
+
+class OAuthLogoutTest(TestCase):
+    def setUp(self):
+        user = UserModel.objects.create_user(**user_data)
+        self.client.force_login(user)
+        self.resp = self.client.get(r('accounts:logout'))
+
+    def test_status_code(self):
+        self.assertEqual(302, self.resp.status_code)
+
+    def test_user_logged_out(self):
+        self.assertFalse(self.resp.wsgi_request.user.is_authenticated)
