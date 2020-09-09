@@ -1,11 +1,14 @@
 from django.views.generic import RedirectView, View
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django.shortcuts import redirect, render, resolve_url as r
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
 
 from .oauth import OAuthUsp
 from .transform import Transform
 from .models import UserModel
+
+REDIRECT_AFTER_LOGOUT_URL = getattr(settings, 'REDIRECT_AFTER_LOGOUT_URL')
 
 
 class OAuthLogin(RedirectView):
@@ -76,3 +79,8 @@ accounts_authorize = OAuthAuthorize.as_view()
 def user_detail(request):
     context = {'user': request.user}
     return render(request, 'user.html', context=context)
+
+
+def user_logout(request):
+    logout(request)
+    return redirect(REDIRECT_AFTER_LOGOUT_URL)
