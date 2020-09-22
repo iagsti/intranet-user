@@ -45,7 +45,7 @@ class OAuthLogin(APIView):
 accounts_login = OAuthLogin.as_view()
 
 
-class OAuthAuthorize(View):
+class OAuthAuthorize(APIView):
     def setup(self, request, *args, **kwargs):
         self.oauth_usp = OAuthUsp()
         return super().setup(request, *args, **kwargs)
