@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'test_without_migrations',
     'django_extensions',
+    'rest_framework',
     'users.accounts',
 ]
 
@@ -75,6 +76,13 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'users.urls'
+
+# Django Rest settings
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication'
+    ]
+}
 
 TEMPLATES = [
     {
