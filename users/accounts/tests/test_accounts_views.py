@@ -3,6 +3,7 @@ from django.shortcuts import resolve_url as r
 from django.http import HttpRequest, QueryDict
 from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.auth.models import AnonymousUser
+from rest_framework.views import APIView
 from django.test import Client
 
 from ..views import OAuthAuthorize, OAuthLogin
@@ -60,6 +61,9 @@ class AuthorizeViewTest(TestCase):
         setattr(self.request, 'user', user)
 
         self.obj = OAuthAuthorize()
+
+    def test_oauth_authorize_instance(self):
+        self.assertIsInstance(self.obj, APIView)
 
     @ mock_oauth
     def test_user_has_been_presisted(self):
