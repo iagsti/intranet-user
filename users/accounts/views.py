@@ -2,6 +2,8 @@ from django.views.generic import RedirectView, View
 from django.contrib.auth import login, authenticate, logout
 from django.shortcuts import redirect, render, resolve_url as r
 from django.contrib.auth.decorators import login_required
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from django.conf import settings
 
 from .oauth import OAuthUsp
@@ -11,11 +13,14 @@ from .models import UserModel
 REDIRECT_AFTER_LOGOUT_URL = getattr(settings, 'REDIRECT_AFTER_LOGOUT_URL')
 
 
-class OAuthLogin(RedirectView):
+class OAuthLogin(APIView):
     def get(self, request, *args, **kwargs):
-        self.detail_if_logedin(request)
+        if self.already_logedin(request):
+            return Response({'url': self.get_redirect_url()})
         self.set_next_url(request)
-        return super().get(request, *args, **kwargs)
+        self.setup(request, *args, **kwargs)
+        url = self.get_redirect_url()
+        return Response({'url': url})
 
     def get_redirect_url(self, *args, **kwargs):
         return self.redirect_uri.url
@@ -25,9 +30,11 @@ class OAuthLogin(RedirectView):
         self.redirect_uri = oauth_usp.get_authorize_redirect(request)
         return super().setup(request, *args, **kwargs)
 
-    def detail_if_logedin(self, request):
+    def already_logedin(self, request):
         if request.user.is_authenticated:
             self.redirect_uri = redirect(r('accounts:user_detail'))
+            return True
+        return False
 
     def set_next_url(self, request):
         request.session['next'] = '/'

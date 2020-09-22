@@ -16,8 +16,8 @@ class LoginViewsTest(TestCase):
         self.resp = self.client.get(r('accounts:login'))
 
     def test_status_code(self):
-        """Status code should be 302"""
-        self.assertEqual(302, self.resp.status_code)
+        """Status code should be 200"""
+        self.assertEqual(200, self.resp.status_code)
 
 
 class LoginViewsUserLogedInTest(TestCase):
@@ -27,10 +27,15 @@ class LoginViewsUserLogedInTest(TestCase):
         self.client.force_login(self.user)
         self.resp = self.client.get(r('accounts:login'))
 
+    def test_user_is_loggedin(self):
+        """User should be logged in"""
+        user = self.resp.wsgi_request.user
+        self.assertTrue(user.is_authenticated)
+
     def test_redirect_to_user_detail(self):
         """Loged in user should be redirect to user detail"""
         expected = '/auth/user'
-        self.assertEqual(self.resp.url, expected)
+        self.assertEqual(self.resp.data.get('url'), expected)
 
 
 class AuthorizeViewTest(TestCase):
