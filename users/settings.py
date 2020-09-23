@@ -61,8 +61,9 @@ INSTALLED_APPS = [
     'test_without_migrations',
     'django_extensions',
     'rest_framework',
-    'users.accounts',
     'revproxy',
+    'users.accounts',
+    'users.proxy',
 ]
 
 MIDDLEWARE = [
