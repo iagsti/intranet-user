@@ -1,3 +1,10 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Upstreams
+
+
+class UpstreamAdmin(admin.ModelAdmin):
+    display_list = ('id', 'path', 'upstream')
+
+
+admin.site.register(Upstreams, UpstreamAdmin)
