@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'rest_framework',
     'users.accounts',
+    'revproxy',
 ]
 
 MIDDLEWARE = [
