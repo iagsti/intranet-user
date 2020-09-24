@@ -61,7 +61,9 @@ INSTALLED_APPS = [
     'test_without_migrations',
     'django_extensions',
     'rest_framework',
+    'revproxy',
     'users.accounts',
+    'users.proxy',
 ]
 
 MIDDLEWARE = [
@@ -152,3 +154,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 ALLOWED_UNIDADES = config('ALLOWED_UNIDADES', cast=Csv())
+
+# Reverse Proxy settings
+DEFAULT_UPSTREAM = config('DEFAULT_UPSTREAM')
+LOGIN_UPSTREAM = config('LOGIN_UPSTREAM')
